@@ -23,7 +23,9 @@ stages:
       inputs:
         pathtoPublish: '$(System.DefaultWorkingDirectory)'
         artifactName: 'node-app-artifact'
-        publishLocation: 'Container'
+        publishLocation: 'FilePath'
+        TargetPath: '$(Build.ArtifactStagingDirectory)'
+
 
 - stage: Test
   jobs:
