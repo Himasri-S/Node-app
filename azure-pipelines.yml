@@ -23,8 +23,7 @@ stages:
       inputs:
         pathtoPublish: '$(System.DefaultWorkingDirectory)'
         artifactName: 'node-app-artifact'
-        publishLocation: 'FilePath'
-        TargetPath: '$(Build.ArtifactStagingDirectory)'
+        publishLocation: 'Pipeline'
 
 
 - stage: Test
