@@ -35,7 +35,7 @@ stages:
       inputs:
         pathtoPublish: /home/ubuntu/myagent/_work/2/a
         artifactName: 'node-app-artifact'
-        publishLocation: 'Pipeline'
+        publishLocation: 'Container'
 
 
 - stage: Test
