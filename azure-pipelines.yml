@@ -1,0 +1,57 @@
+trigger:
+- main
+
+pool:
+  name: Default
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '14.x'
+      displayName: 'Install Node.js'
+
+    - script: npm install
+      displayName: 'Install dependencies'
+
+    - script: npm run build
+      displayName: 'Build application'
+    
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(build.artifactstagingdirectory)/node-app.zip'
+      displayName: 'Archive files'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: '$(build.artifactstagingdirectory)'
+        artifactName: 'node-app-artifact'
+        publishLocation: 'Container'
+      
+    - task: S3Upload@1
+      inputs:
+        awsCredentials: 'awsS3'
+        regionName: 'ap-south-1'
+        bucketName: 'myawsbucket-hs'
+        sourceFolder: '$(build.artifactstagingdirectory)'
+        globExpressions: '**'
+        targetFolder: 'node-app.zip'
+        createBucket: true
+
+- stage: Test
+  jobs:
+  - job: TestJob
+    steps:
+    - script: npm install
+      displayName: 'Install dependencies for testing'
+
+    - script: npm test
+      displayName: 'Run unit tests'
+
+
